@@ -1,6 +1,6 @@
 <script setup>
 import Button from '@/components/Button.vue'
-import { ref } from 'vue';
+import { ref } from 'vue'
 
   defineProps({
     isShowModal: {
@@ -9,12 +9,28 @@ import { ref } from 'vue';
     }
   })
 
-  const Images = ref()
+  const Images = ref([])
+
   const changeInput =(e) => {
     const files = e.target.files
     if (!files || files?.length <= 0) return
-    Images.value = files
+
+    Array.from(files).forEach(file => {
+      Images.value.push({
+        "url": URL.createObjectURL(file),
+        "name": file.name,
+        "size": file.size,
+        "type": file.type
+      })
+      URL.revokeObjectURL(file) // 破棄
+    })
   }
+
+  const emit = defineEmits(['click-submit']);
+  const onClickSubmit = () => {
+    emit('click-submit', Images.value)
+    Images.value = []
+  } 
 </script>
 
 <template>
@@ -25,7 +41,7 @@ import { ref } from 'vue';
     >
       <h1 class="Dialog__title">アップロードする画像を選択してください</h1>
       <div class="Dialog__content">
-        <p v-for="image in previewImage">{{ image.name }}</p>
+        <p v-for="image in Images">{{ image.name }}</p>
         <label>
           <input
             type="file"
@@ -38,7 +54,7 @@ import { ref } from 'vue';
           画像を選択
         </label>
         <div class="Dialog__content__action">
-          <Button label="アップロード" @click="$emit('click-submit', Images)"/>
+          <Button label="アップロード" @click="onClickSubmit()" :disabled="Images.length <= 0"/>
           <Button label="キャンセル" @click="$emit('click-cancel')"/>
         </div>
       </div>
