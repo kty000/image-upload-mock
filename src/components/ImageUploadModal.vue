@@ -11,7 +11,7 @@ import { ref } from 'vue'
 
   const Images = ref([])
 
-  const changeInput =(e) => {
+  const changeInput = (e) => {
     const files = e.target.files
     if (!files || files?.length <= 0) return
 
@@ -35,13 +35,9 @@ import { ref } from 'vue'
 
 <template>
   <div v-if=isShowModal class="Dialog__wrapper" >
-    <dialog
-      class="Dialog"
-      open
-    >
+    <dialog class="Dialog" open>
       <h1 class="Dialog__title">アップロードする画像を選択してください</h1>
       <div class="Dialog__content">
-        <p v-for="image in Images">{{ image.name }}</p>
         <label>
           <input
             type="file"
@@ -53,8 +49,15 @@ import { ref } from 'vue'
           />
           画像を選択
         </label>
+        <p v-for="image in Images">
+          {{ image.name }}
+        </p>
         <div class="Dialog__content__action">
-          <Button label="アップロード" @click="onClickSubmit()" :disabled="Images.length <= 0"/>
+          <Button
+            label="アップロード"
+            @click="onClickSubmit"
+            :disabled="Images.length <= 0"
+          />
           <Button label="キャンセル" @click="$emit('click-cancel')"/>
         </div>
       </div>
@@ -64,9 +67,9 @@ import { ref } from 'vue'
 
 <style scoped>
 label {
-  padding: 16px 24px;
-  color: #fff;
-  background-color: #384878;
+  padding: 16px;
+  color: #000;
+  background-color: #c7f0f2;
   cursor: pointer;
 }
 input[type="file"] {
@@ -116,5 +119,4 @@ input[type="file"] {
   gap: 30px;
   justify-content: space-between;
 }
-
 </style>
